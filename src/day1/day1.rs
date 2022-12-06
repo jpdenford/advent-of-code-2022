@@ -12,7 +12,7 @@ pub fn run() {
         .map(|elf_block| {
             elf_block
                 .split("\n")
-                .map(|numstr| numstr.parse::<i32>().unwrap())
+                .map(|num_str| num_str.parse::<i32>().unwrap())
                 .sum::<i32>()
         })
         .collect::<Vec<i32>>();
