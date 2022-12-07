@@ -26,17 +26,17 @@ fn parse_game_line(line: &str) -> ((char, u32), (char, u32)) {
     )
 }
 
-fn calc_score(a: u32, b: u32) -> (u32, u32) {
+fn calc_score(a: u32, b: u32) -> u32 {
     match (a, b) {
-        (a, b) if a == b => (3 + a, 3 + b), // same = draw
-        (2, 1) => (6 + a, b),               // Paper vs Rock -> a wins
-        (3, 2) => (6 + a, b),               // Scissors vs Paper -> a wins
-        (1, 3) => (6 + a, b),               // Rock vs Scissors -> a wins
-        _ => (a, 6 + b),                    // every other combo -> b wins
+        (a, b) if a == b => 3 + b, // same = draw
+        (2, 1) => b,               // Paper vs Rock -> they win
+        (3, 2) => b,               // Scissors vs Paper -> they win
+        (1, 3) => b,               // Rock vs Scissors -> they win
+        _ => 6 + b,                // every other combo -> b wins
     }
 }
 
-fn calc_score_from_desired(their_move: u32, desired_outcome: char) -> (u32, u32) {
+fn calc_score_from_desired(their_move: u32, desired_outcome: char) -> u32 {
     let desired_move = match desired_outcome {
         // a losing move is one 'higher' (wrapped around e.g. Rock 1 -> Paper 2)
         'X' => ((their_move + 1) % 3) + 1,
@@ -56,16 +56,11 @@ pub fn run() {
 
     let games = contents.trim().split("\n").map(parse_game_line);
 
-    let part_1: u32 = games
-        .clone()
-        .map(|(a, b)| calc_score(a.1, b.1))
-        .map(|(_, own_score)| own_score)
-        .sum();
+    let part_1: u32 = games.clone().map(|(a, b)| calc_score(a.1, b.1)).sum();
 
     let part_2: u32 = games
         .clone()
-        .map(|(a, b)| calc_score_from_desired(a.1, b.0))
-        .map(|(_, own_score)| own_score)
+        .map(|(their_move, our_move)| calc_score_from_desired(their_move.1, our_move.0))
         .sum();
 
     println!("part 1 result: {:?}", part_1);
