@@ -56,7 +56,10 @@ pub fn run() {
 
     let games = contents.trim().split("\n").map(parse_game_line);
 
-    let part_1: u32 = games.clone().map(|(a, b)| calc_score(a.1, b.1)).sum();
+    let part_1: u32 = games
+        .clone()
+        .map(|(their_move, our_move)| calc_score(their_move.1, our_move.1))
+        .sum();
 
     let part_2: u32 = games
         .clone()
