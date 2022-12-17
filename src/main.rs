@@ -10,10 +10,14 @@ mod day3;
 #[path = "./day4/day4.rs"]
 mod day4;
 
+#[path = "./day5/day5.rs"]
+mod day5;
+
 fn main() {
     println!("Running!");
     // day1::run();
     // day2::run();
     // day3::run();
-    day4::run();
+    // day4::run();
+    day5::run();
 }
