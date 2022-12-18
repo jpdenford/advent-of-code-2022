@@ -26,7 +26,6 @@ fn parse_stacks(stack_def: &str) -> Vec<Vec<char>> {
         let chars = row.chars().collect::<Vec<char>>();
         for i in 0..stacks.len() {
             let ch = chars.get(i * 4 + 1);
-            println!("got {:?} {:?} {:?}", row, i, ch);
             match ch {
                 Some(chr) if chr != &' ' => stacks[i].push(chr.clone()),
                 _ => {}
@@ -46,10 +45,6 @@ fn parse_moves(moves_def: &str) -> Vec<(u8, u8, u8)> {
             num_regx
                 .captures_iter(line)
                 .map(|cap| cap[0].parse::<u8>().unwrap())
-            // .line
-            // .chars()
-            // .filter(|ch| ch.is_ascii_digit())
-            // .map(|c| c.to_digit(10).unwrap())
         })
         .map(|mut nums| {
             (
@@ -61,7 +56,7 @@ fn parse_moves(moves_def: &str) -> Vec<(u8, u8, u8)> {
         .collect()
 }
 
-fn exec_moves(stacks: Vec<Vec<char>>, moves: Vec<(u8, u8, u8)>) -> Vec<Vec<char>> {
+fn exec_moves_part_1(stacks: Vec<Vec<char>>, moves: Vec<(u8, u8, u8)>) -> Vec<Vec<char>> {
     let mut new_stacks = stacks.clone();
 
     for (num_to_move, from, to) in moves {
@@ -71,6 +66,22 @@ fn exec_moves(stacks: Vec<Vec<char>>, moves: Vec<(u8, u8, u8)>) -> Vec<Vec<char>
         }
     }
     new_stacks
+}
+
+fn exec_moves_part_2(stacks: Vec<Vec<char>>, moves: Vec<(u8, u8, u8)>) -> Vec<Vec<char>> {
+    let mut new_stacks = stacks.clone();
+
+    for (num_to_move, from, to) in moves {
+        let from_stack = &mut new_stacks[(from - 1) as usize];
+        let target_length = &from_stack.len().saturating_sub((num_to_move) as usize);
+        let mut popped = from_stack.split_off(target_length.clone());
+        new_stacks[(to - 1) as usize].append(&mut popped);
+    }
+    new_stacks
+}
+
+fn get_top_of_stacks(stacks: Vec<Vec<char>>) -> String {
+    stacks.iter().map(|s| s.last().unwrap()).collect::<String>()
 }
 
 pub fn run() {
@@ -86,11 +97,11 @@ pub fn run() {
     let stacks = parse_stacks(stack_def);
     let moves = parse_moves(moves_def);
 
-    let final_stacks = exec_moves(stacks, moves);
-    let result = final_stacks
-        .iter()
-        .map(|s| s.last().unwrap())
-        .collect::<String>();
-    println!("part 1 result: {:?}", result);
-    // println!("part 2 result: {:?}", part_2);
+    let final_stacks_1 = exec_moves_part_1(stacks.clone(), moves.clone());
+    let part_1 = get_top_of_stacks(final_stacks_1);
+    println!("part 1 result: {:?}", part_1);
+
+    let final_stacks_2 = exec_moves_part_2(stacks, moves);
+    let part_2 = get_top_of_stacks(final_stacks_2);
+    println!("part 2 result: {:?}", part_2);
 }
