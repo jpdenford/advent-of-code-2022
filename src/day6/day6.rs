@@ -5,7 +5,7 @@ fn find_unique_window(chars: Vec<char>, window_size: usize) -> u16 {
     chars
         .windows(window_size)
         .zip(0..)
-        .filter(|(four, i)| four.iter().collect::<HashSet<_>>().len() == window_size)
+        .filter(|(window, i)| window.iter().collect::<HashSet<_>>().len() == window_size)
         .next()
         .map(|(_, i)| (i + window_size) as u16)
         .unwrap()
